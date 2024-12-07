@@ -4,7 +4,7 @@ import { config } from 'dotenv';
 import sharp from 'sharp';
 
 config();
-
+console.log(process.env.DB_PASSWORD);
 const app = express();
 const port = process.env.PORT || 3000;
 import pkg from 'pg';
@@ -57,6 +57,9 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
+app.get('/api/bog', (_req, res) => {
+  res.json({ status: 'dumpet' });
+});
 
 //app.post('/api/auth', async (req, res) => {
 //  await handleAuth(req, res, pool);
@@ -83,7 +86,7 @@ app.get('/api/works/all', async (_req, res) => {
     }
   });
 
-app.get('/api/images', async (req, res) => {
+app.get('/api/images', async (_req, res) => {
     try {
       const result = await pool.query(`
         SELECT 
