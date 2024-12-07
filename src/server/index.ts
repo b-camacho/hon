@@ -3,8 +3,8 @@ import cors from 'cors';
 import { config } from 'dotenv';
 import sharp from 'sharp';
 
-config();
-console.log(process.env.DB_PASSWORD);
+config({ path: '.env.local' });
+
 const app = express();
 const port = process.env.PORT || 3000;
 import pkg from 'pg';
@@ -89,10 +89,8 @@ app.get('/api/works/all', async (_req, res) => {
 app.get('/api/images', async (_req, res) => {
     try {
       const result = await pool.query(`
-        SELECT 
-          w.id,
-          w.href
-        FROM images 
+        SELECT *
+        FROM images
       `);
 
       res.json(result.rows);
