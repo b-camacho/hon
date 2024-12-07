@@ -28,14 +28,14 @@ export default function Reel() {
   }, []);
 
   // Load more when approaching end
-  const handleImageView = (index: number) => {
-    if (index >= images.length - 2 && !loading) {
-      const nextPage = page + 1;
-      setPage(nextPage);
-      fetchImages()
-      // fetchImages(nextPage);
-    }
-  };
+//  const handleImageView = (index: number) => {
+//    if (index >= images.length - 2 && !loading) {
+//      const nextPage = page + 1;
+//      setPage(nextPage);
+//      fetchImages()
+//      // fetchImages(nextPage);
+//    }
+//  };
 
 
   const voteHandler = async (imageId: number, voteType: Vote) => {
@@ -46,7 +46,7 @@ export default function Reel() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          user_id: 1,
+          user_id: "1",
           image_id: imageId,
           vote: voteType
         })
