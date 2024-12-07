@@ -1,19 +1,13 @@
-import Show from './Show';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import TinderCard from 'react-tinder-card';
+import Reel from './Reel';
 
 function AppContent() {
   return (
     <>
       <Routes>
         <Route path="/" element={
-          <div className="card-container">
-            <TinderCard
-              onSwipe={(dir) => console.log('swiped', dir)}
-              onCardLeftScreen={() => console.log('card left screen')}
-            >
-              <Show imageUrl="https://hon.chmod.site/assets/Anatomy_Lesson.jpg" />
-            </TinderCard>
+          <div className="card-container p-4" style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Reel />
           </div>
         } />
       </Routes>
