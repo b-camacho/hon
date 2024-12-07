@@ -111,7 +111,7 @@ app.post('/api/vote', async (req, res) => {
     }
 
     // Ensure vote value is either -1 or 1
-    if (vote !== "hot" && vote !== "not") {
+    if (vote !== "HOT" && vote !== "NOT") {
       return res.status(400).json({ error: 'Vote value must be either -1 or 1' });
     }
 
@@ -121,7 +121,7 @@ app.post('/api/vote', async (req, res) => {
        ON CONFLICT (user_id, image_id)
        DO UPDATE SET value = $3
        RETURNING *`,
-      [user_id, image_id, vote === "hot" ? 1 : -1]
+      [user_id, image_id, vote === "HOT" ? 1 : -1]
     );
 
     res.status(201).json(result.rows[0]);
