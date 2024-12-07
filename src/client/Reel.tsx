@@ -4,8 +4,8 @@ import { Vote, Image } from './types';
 
 export default function Reel() {
   const [images, setImages] = useState<Image[]>([]);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
+  //const [page, setPage] = useState(1);
+  const [_loading, setLoading] = useState(false);
 
   const fetchImages = async () => {
     try {
