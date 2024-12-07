@@ -1,0 +1,50 @@
+{
+    "name": "hon",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "start:server": "NODE_OPTIONS='--loader ts-node/esm' node src/server/index.ts",
+        "start:client": "vite",
+        "build": "tsc && vite build",
+        "dev": "concurrently \"npm run start:server\" \"npm run start:client\""
+    },
+    "dependencies": {
+        "@auth0/auth0-react": "^2.2.4",
+        "@react-spring/web": "^9.7.5",
+        "cors": "^2.8.5",
+        "crypto": "^1.0.1",
+        "dotenv": "^16.0.3",
+        "express": "^4.18.2",
+        "express-jwt": "^8.4.1",
+        "express-oauth2-jwt-bearer": "^1.6.0",
+        "jwks-rsa": "^3.1.0",
+        "pg": "^8.13.1",
+        "qrcode": "^1.5.4",
+        "react": "^18.2.0",
+        "react-currency-input-field": "^3.9.0",
+        "react-dom": "^18.2.0",
+        "react-icons": "^5.3.0",
+        "react-router-dom": "^6.28.0",
+        "react-tinder-card": "^1.6.4",
+        "sharp": "^0.33.5",
+        "source-map-support": "^0.5.21"
+    },
+    "devDependencies": {
+        "@types/cors": "^2.8.13",
+        "@types/express": "^4.17.17",
+        "@types/node": "^18.15.11",
+        "@types/pg": "^8.11.10",
+        "@types/qrcode": "^1.5.5",
+        "@types/react": "^18.0.28",
+        "@types/react-dom": "^18.0.11",
+        "@types/source-map-support": "^0.5.10",
+        "@vitejs/plugin-react": "^3.1.0",
+        "autoprefixer": "^10.4.20",
+        "concurrently": "^8.0.1",
+        "postcss": "^8.4.49",
+        "tailwindcss": "^3.4.15",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.0.2",
+        "vite": "^4.2.0"
+    }
+}
