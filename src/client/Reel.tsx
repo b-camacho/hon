@@ -7,10 +7,12 @@ export default function Reel() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  const fetchImages = async (_pageNum: number) => {
+  const fetchImages = async () => {
     try {
+        // refetches the same images twice for now!
+        // but we all start somewhere
       setLoading(true);
-      const response = await fetch(`/images`);
+      const response = await fetch(`/api/images`);
       const newImages = await response.json();
       setImages(prev => [...prev, ...newImages]);
       setLoading(false);
@@ -22,7 +24,7 @@ export default function Reel() {
 
   // Initial load
   useEffect(() => {
-    fetchImages(1);
+    fetchImages();
   }, []);
 
   // Load more when approaching end
@@ -30,15 +32,37 @@ export default function Reel() {
     if (index >= images.length - 2 && !loading) {
       const nextPage = page + 1;
       setPage(nextPage);
-      fetchImages(nextPage);
+      fetchImages()
+      // fetchImages(nextPage);
     }
   };
 
 
-  const voteHandler = (idx: number, vote: Vote) => {
-    const image = images[idx];
-    console.log(`id ${image.id} is ${vote}`);
-    handleImageView(idx);
+  const voteHandler = async (imageId: number, voteType: Vote) => {
+    try {
+      const response = await fetch('/api/vote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user_id: 1,
+          image_id: imageId,
+          vote: voteType
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to submit vote');
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error('Error submitting vote:', error);
+      throw error;
+    }
   };
 
   return (
