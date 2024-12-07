@@ -89,18 +89,47 @@ app.get('/api/works/all', async (_req, res) => {
 app.get('/api/images', async (_req, res) => {
     try {
       const result = await pool.query(`
-        SELECT *
+        SELECT id, href
         FROM images
       `);
 
       res.json(result.rows);
+      console.log(result.rows);
     } catch (err) {
       console.error('Error fetching images:', err);
       res.status(500).json({ error: 'Internal server error' });
     }
   });
 
+app.post('/api/vote', async (req, res) => {
+  try {
+    const { user_id, image_id, vote } = req.body;
+    
+    // Validate required fields
+    if (!user_id || !image_id || vote === undefined) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
 
+    // Ensure vote value is either -1 or 1
+    if (vote !== "hot" && vote !== "not") {
+      return res.status(400).json({ error: 'Vote value must be either -1 or 1' });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO votes (user_id, image_id, value)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (user_id, image_id)
+       DO UPDATE SET value = $3
+       RETURNING *`,
+      [user_id, image_id, vote === "hot" ? 1 : -1]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('Error submitting vote:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
