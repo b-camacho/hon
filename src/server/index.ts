@@ -2,6 +2,18 @@ import express from 'express';
 import cors from 'cors';
 import { config } from 'dotenv';
 import sharp from 'sharp';
+import jwt from 'jsonwebtoken';
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: number;
+        name: string;
+      }
+    }
+  }
+}
 
 config({ path: '.env.local' });
 
@@ -20,6 +32,18 @@ const pool = new Pool({
 
 app.use(cors());
 app.use(express.json());
+
+app.get('/api/auth', async (_req, res) => {
+  const result = await pool.query(`
+    INSERT INTO users DEFAULT VALUES
+    RETURNING id
+  `);
+  const user_id = result.rows[0].id;
+
+  const token = jwt.sign({ user_id }, process.env.JWT_SECRET as string);
+  res.json({ jwt: token });
+});
+
 
 app.get('/api/placeholder/:width/:height', async (req, res) => {
   try {
@@ -53,12 +77,31 @@ app.get('/api/placeholder/:width/:height', async (req, res) => {
   }
 });
 
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok' });
+
+app.use(async (req: any, _res, next) => {
+  const authHeader = req.headers.authorization;
+  
+  if (authHeader) {
+    try {
+      const token = authHeader.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { user_id: number };
+      const user_id = { id: decoded.user_id };
+      const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [user_id.id]);
+      if (userResult.rows.length === 0) {
+        return next(new Error('User not found'));
+      }
+      req.user = userResult.rows[0];
+
+    } catch (err) {
+      console.error('Error verifying JWT:', err);
+    }
+  }
+  next();
 });
 
 app.get('/api/images', async (req, res) => {
-    try {
+  console.log(req.user);
+  try {
       const kind = req.query.kind;
       const result = await pool.query(`
         SELECT i.id, i.href, i.name

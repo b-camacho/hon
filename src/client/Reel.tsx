@@ -2,6 +2,7 @@ import Swipeable from './components/Swipeable';
 import { useState, useEffect } from 'react';
 import { Vote, Image } from './types';
 import { useNavigate } from 'react-router-dom';
+import { fetchWithAuth } from './fetchWithAuth';
 
 export default function Reel({ kind_idx, kinds }: { kind_idx: number, kinds: string[] }) {
     const kind = kinds[kind_idx];
@@ -19,7 +20,7 @@ export default function Reel({ kind_idx, kinds }: { kind_idx: number, kinds: str
         // refetches the same images twice for now!
         // but we all start somewhere
       setLoading(true);
-      const response = await fetch(`/api/images?kind=${kind}`);
+      const response = await fetchWithAuth(`/api/images?kind=${kind}`);
       const newImages = await response.json();
       setImages(prev => [...prev, ...newImages]);
       setLoading(false);
@@ -49,7 +50,7 @@ export default function Reel({ kind_idx, kinds }: { kind_idx: number, kinds: str
   const voteHandler = async (imageIdx: number, voteType: Vote) => {
     const image = images[imageIdx];
     try {
-      const response = await fetch('/api/vote', {
+      const response = await fetchWithAuth('/api/vote', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
