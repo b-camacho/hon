@@ -57,41 +57,15 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
-app.get('/api/bog', (_req, res) => {
-  res.json({ status: 'dumpet' });
-});
-
-//app.post('/api/auth', async (req, res) => {
-//  await handleAuth(req, res, pool);
-//});
-
-app.get('/api/works/all', async (_req, res) => {
+app.get('/api/images', async (req, res) => {
     try {
+      const kind = req.query.kind;
       const result = await pool.query(`
-        SELECT 
-          w.id,
-          w.name as title,
-          w.descr as description,
-          w.image,
-          a.name as author_name,
-          a.bio as author_bio
-        FROM works w
-        JOIN authors a ON w.author_id = a.id
-        ORDER BY w.id DESC
-      `);
-      res.json(result.rows);
-    } catch (err) {
-      console.error('Error fetching works:', err);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  });
-
-app.get('/api/images', async (_req, res) => {
-    try {
-      const result = await pool.query(`
-        SELECT id, href, name
-        FROM images
-      `);
+        SELECT i.id, i.href, i.name
+        FROM images i
+        JOIN kinds k ON i.kind_id = k.id
+        WHERE k.name = $1
+      `, [kind]);
 
       res.json(result.rows);
     } catch (err) {

@@ -2,14 +2,21 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Reel from './Reel';
 
 function AppContent() {
+  const kinds = ['cheese', 'art'];
   return (
     <>
       <Routes>
-        <Route path="/" element={
-          <div className="card-container p-4" style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Reel />
-          </div>
-        } />
+        {kinds.map((kind, idx) => (
+          <Route 
+            key={kind}
+            path={`/${kind}`} 
+            element={
+              <div className="p-4 h-screen">
+                <Reel kind_idx={idx} kinds={kinds}/>
+              </div>
+            }
+          />
+        ))}
       </Routes>
     </>
   );

@@ -1,5 +1,4 @@
 import React, { useState, ReactNode } from 'react';
-import styles from './Swipeable.module.css';
 import { Vote } from '../types';
 
 interface SwipeableProps {
@@ -11,33 +10,32 @@ const Swipeable: React.FC<SwipeableProps> = ({ children, onVote }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   return (
-    <div className={styles.container}>
-      <div 
-        className={styles.content}
-     >
-        <div>
+    <div className="flex flex-col">
+      <div className="flex-grow">
+        <div className="h-full overflow-hidden">
           {children[currentIndex]}
         </div>
       </div>
-      <div className={styles.buttons}>
-        <button
-          onClick={() => {
-            onVote?.(currentIndex, Vote.NOT);
-            setCurrentIndex(currentIndex + 1);
-          }}
-          className={styles.button}
-        >
-          Not
-        </button>
-        <button
-          onClick={() => {
-            onVote?.(currentIndex, Vote.HOT);
+      
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white">
+        <div className="flex justify-center gap-4">
+          <button className="bg-rose-500 text-white p-2 rounded-md w-24"
+            onClick={() => {
+              onVote?.(currentIndex, Vote.NOT);
               setCurrentIndex(currentIndex + 1);
-          }}
-          className={styles.button}
-        >
-          Hot
-        </button>
+            }}
+          >
+            Not
+          </button>
+          <button className="bg-lime-500 text-white p-2 rounded-md w-24"
+            onClick={() => {
+              onVote?.(currentIndex, Vote.HOT);
+              setCurrentIndex(currentIndex + 1);
+            }}
+          >
+            Hot
+          </button>
+        </div>
       </div>
     </div>
   );
