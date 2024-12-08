@@ -3,6 +3,7 @@ import cors from 'cors';
 import { config } from 'dotenv';
 import sharp from 'sharp';
 import jwt from 'jsonwebtoken';
+import { uniqueNamesGenerator, colors, animals } from 'unique-names-generator';
 
 declare global {
   namespace Express {
@@ -34,10 +35,18 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/api/auth', async (_req, res) => {
+  
+  const name = uniqueNamesGenerator({
+    dictionaries: [colors, ['-dash-'], animals],
+    separator: '',
+    style: 'lowerCase'
+  });
+
   const result = await pool.query(`
-    INSERT INTO users DEFAULT VALUES
+    INSERT INTO users (name)
+    VALUES ($1)
     RETURNING id
-  `);
+  `, [name]);
   const user_id = result.rows[0].id;
 
   const token = jwt.sign({ user_id }, process.env.JWT_SECRET as string);
@@ -107,8 +116,10 @@ app.get('/api/images', async (req, res) => {
         SELECT i.id, i.href, i.name
         FROM images i
         JOIN kinds k ON i.kind_id = k.id
+        LEFT JOIN votes v ON i.id = v.image_id AND v.user_id = $2
         WHERE k.name = $1
-      `, [kind]);
+        AND v.id IS NULL
+      `, [kind, req.user?.id]);
 
       res.json(result.rows);
     } catch (err) {
@@ -119,7 +130,8 @@ app.get('/api/images', async (req, res) => {
 
 app.post('/api/vote', async (req, res) => {
   try {
-    const { user_id, image_id, vote } = req.body;
+    const user_id = req.user?.id;
+    const { image_id, vote } = req.body;
     
     // Validate required fields
     if (!user_id || !image_id || vote === undefined) {
