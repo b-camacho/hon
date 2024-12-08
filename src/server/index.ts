@@ -89,12 +89,11 @@ app.get('/api/works/all', async (_req, res) => {
 app.get('/api/images', async (_req, res) => {
     try {
       const result = await pool.query(`
-        SELECT id, href
+        SELECT id, href, name
         FROM images
       `);
 
       res.json(result.rows);
-      console.log(result.rows);
     } catch (err) {
       console.error('Error fetching images:', err);
       res.status(500).json({ error: 'Internal server error' });
