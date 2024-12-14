@@ -18,7 +18,7 @@ export const KindRank = ({ kind, kind_idx, kinds }: KindRankProps) => {
           }[kind]
         } bg-repeat`}
       ></div>
-      <div className="relative z-10">
+      <div className="relative z-10 max-w-3xl mx-auto px-4 md:px-8">
         <KindNav kind_idx={kind_idx} kinds={kinds} />
         <Reel kind={kind} />
       </div>
