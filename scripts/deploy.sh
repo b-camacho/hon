@@ -11,6 +11,8 @@ npm run build
 ssh $REMOTE "mkdir -p $REMOTE_APP_DIR/server"
 
 rsync -zaP dist/* $REMOTE:$REMOTE_STATIC_DIR/
+rsync -zaP static/* $REMOTE:$REMOTE_STATIC_DIR/assets
+
 
 rsync -zaP package.json $REMOTE:$REMOTE_APP_DIR/
 rsync -zaP package-lock.json $REMOTE:$REMOTE_APP_DIR/

@@ -1,22 +1,23 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Reel from './Reel';
-import { useState } from 'react';
-import { useEffect } from 'react';
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Top } from "./Top";
+import { KindRank } from "./KindRank";
 
 function AppContent() {
-  const [jwt, setJwt] = useState<string | null>(localStorage.getItem('session_jwt'));
+  const [jwt, setJwt] = useState<string | null>(
+    localStorage.getItem("session_jwt"),
+  );
 
   useEffect(() => {
     const getJwt = async () => {
       if (!jwt) {
         try {
-          const response = await fetch('/api/auth');
+          const response = await fetch("/api/auth");
           const data = await response.json();
-          localStorage.setItem('session_jwt', data.jwt);
+          localStorage.setItem("session_jwt", data.jwt);
           setJwt(data.jwt);
         } catch (error) {
-          console.error('Error getting JWT:', error);
+          console.error("Error getting JWT:", error);
         }
       }
     };
@@ -24,17 +25,24 @@ function AppContent() {
     getJwt();
   }, [jwt]);
 
-  const kinds = ['cheese', 'art'];
+  const kinds = ["cheese", "art"];
   return (
     <>
       <Routes>
         {kinds.map((kind, idx) => (
-          <Route 
+          <Route
             key={kind}
-            path={`/${kind}`} 
+            path={`/${kind}`}
+            element={<KindRank kind={kind} kind_idx={idx} kinds={kinds} />}
+          />
+        ))}
+        {kinds.map((kind) => (
+          <Route
+            key={"top" + kind}
+            path={`/${kind}/top`}
             element={
               <div className="p-4 h-screen">
-                <Reel kind_idx={idx} kinds={kinds}/>
+                <Top  />
               </div>
             }
           />
