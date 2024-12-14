@@ -97,7 +97,8 @@ app.get("/api/top", async (_req, res) => {
       FROM images i
       LEFT JOIN votes v ON i.id = v.image_id
       GROUP BY i.id, i.name
-      HAVING COUNT(v.*) > 0
+      HAVING COUNT(v.*) > 0 
+        AND COUNT(CASE WHEN v.value = -1 THEN 1 END) > 0
       ORDER BY 
         CAST(COUNT(CASE WHEN v.value = 1 THEN 1 END) AS FLOAT) / NULLIF(COUNT(v.*), 0) DESC,
         COUNT(v.*) DESC
